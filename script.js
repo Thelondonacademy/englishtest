@@ -32,7 +32,7 @@ class CEFRTest {
         this.emailJSServiceId = 'service_j3awk3k'; // Replace with your service ID
         
         // TEMPLATE_ID: Your EmailJS template ID (e.g., 'template_xxxxxxx')
-        this.emailJSTemplateId = 'template_0pih9p8'; // Replace with your template ID
+        this.emailJSTemplateId = 'template_4i5u9pk'; // Replace with your template ID
         
         // PUBLIC_KEY: Your EmailJS public key (e.g., 'xxxxxxxxxxxxxxx')
         this.emailJSPublicKey = 'gvuXhLBLf6F2vkCxF'; // Replace with your public key
