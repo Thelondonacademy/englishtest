@@ -109,14 +109,14 @@ const questionsDatabase = {
             topic: "vocabulary - location"
         },
         {
-            question: "Although there is a lack of clear evidence, people have come up with various theories about the origins of language. One recent theory is that human beings have evolved in (2) ............... a way that we are programmed for language from the moment of birth.",
+            question: "Although there is a lack of clear evidence, people have come up with various theories about the origins of language. One recent theory is that human beings have evolved in ............ a way that we are programmed for language from the moment of birth.",
             options: ["this", "such", "that"],
             correct: 1,
             explanation: "'In such a way' is the correct phrase to describe manner or method.",
             topic: "advanced grammar structures"
         },
         {
-            question: "What are the abilities that a professional sports person needs? To guarantee that opponents can be (3) …….. , speed, stamina and agility are essential.",
+            question: "What are the abilities that a professional sports person needs? To guarantee that opponents can be............ , speed, stamina and agility are essential.",
             options: ["given", "challenged", "overcome"],
             correct: 2,
             explanation: "Athletes need abilities to 'overcome' their opponents - to defeat them.",
