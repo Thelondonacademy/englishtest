@@ -320,6 +320,7 @@ Level: ${qa.level}`;
             wrong_answers: wrongAnswersText,
             suggestions: `• ${suggestions}`,
             test_date: new Date().toLocaleDateString()
+            bcc_email: "test@thelondonacademy.it"
         };
 
         // Send email using EmailJS
