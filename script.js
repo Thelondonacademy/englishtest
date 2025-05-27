@@ -29,13 +29,13 @@ class CEFRTest {
         // Get your keys from: https://www.emailjs.com/
         
         // SERVICE_ID: Your EmailJS service ID (e.g., 'service_xxxxxxx')
-        this.emailJSServiceId = 'YOUR_SERVICE_ID'; // Replace with your service ID
+        this.emailJSServiceId = 'service_j3awk3k'; // Replace with your service ID
         
         // TEMPLATE_ID: Your EmailJS template ID (e.g., 'template_xxxxxxx')
-        this.emailJSTemplateId = 'YOUR_TEMPLATE_ID'; // Replace with your template ID
+        this.emailJSTemplateId = 'template_0pih9p8'; // Replace with your template ID
         
         // PUBLIC_KEY: Your EmailJS public key (e.g., 'xxxxxxxxxxxxxxx')
-        this.emailJSPublicKey = 'YOUR_PUBLIC_KEY'; // Replace with your public key
+        this.emailJSPublicKey = 'gvuXhLBLf6F2vkCxF'; // Replace with your public key
         
         // Initialize EmailJS with your public key
         emailjs.init(this.emailJSPublicKey);
