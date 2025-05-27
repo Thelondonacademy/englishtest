@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test di Livello Inglese CEFR</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Welcome Screen -->
+        <div id="welcome-screen" class="screen active">
+            <div class="welcome-content">
+                <h1>Test di Livello Inglese</h1>
+                <p class="subtitle">Scopri il tuo livello CEFR con il nostro test adattivo</p>
+                <div class="test-info">
+                    <div class="info-item">
+                        <span class="info-number">20</span>
+                        <span class="info-text">Domande</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-number">10</span>
+                        <span class="info-text">Minuti</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-number">A1-C2</span>
+                        <span class="info-text">Livelli CEFR</span>
+                    </div>
+                </div>
+                <p class="description">
+                    Questo test adattivo valuterà la tua competenza in inglese secondo il Quadro Comune Europeo di Riferimento (CEFR). Il test si adatta al tuo livello mentre rispondi alle domande.
+                </p>
+                <button id="start-test-btn" class="primary-btn">Inizia il Test</button>
+            </div>
+        </div>
+
+        <!-- Test Screen -->
+        <div id="test-screen" class="screen">
+            <div class="test-header">
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div id="progress-fill" class="progress-fill"></div>
+                    </div>
+                    <span id="question-counter" class="question-counter">Domanda 1 di 20</span>
+                </div>
+                <div class="current-level">
+                    Livello Attuale: <span id="current-level">A2</span>
+                </div>
+            </div>
+
+            <div class="question-container">
+                <div id="question-text" class="question-text"></div>
+                <div id="options-container" class="options-container"></div>
+            </div>
+
+            <div class="test-footer">
+                <button id="next-btn" class="primary-btn" disabled>Prossima Domanda</button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results-screen" class="screen">
+            <div class="results-content">
+                <div class="level-result">
+                    <h2>Il Tuo Livello di Inglese</h2>
+                    <div id="final-level" class="final-level"></div>
+                    <div id="level-description" class="level-description"></div>
+                </div>
+
+                <div class="detailed-results">
+                    <h3>Riepilogo del Test</h3>
+                    <div id="score-summary" class="score-summary"></div>
+                    <div id="improvement-suggestions" class="improvement-suggestions"></div>
+                </div>
+
+                <div class="contact-form">
+                    <h3>Ricevi i Risultati Dettagliati</h3>
+                    <p>Inserisci i tuoi dati per ricevere un report completo via email</p>
+                    <form id="results-form">
+                        <div class="form-group">
+                            <label for="user-name">Nome e Cognome</label>
+                            <input type="text" id="user-name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="user-email">Indirizzo Email</label>
+                            <input type="email" id="user-email" name="email" required>
+                        </div>
+                        <button type="submit" class="primary-btn">Invia Risultati</button>
+                    </form>
+                </div>
+
+                <button id="retake-test-btn" class="secondary-btn">Rifai il Test</button>
+            </div>
+        </div>
+
+        <!-- Success Screen -->
+        <div id="success-screen" class="screen">
+            <div class="success-content">
+                <div class="success-icon">✓</div>
+                <h2>Risultati Inviati con Successo!</h2>
+                <p>Controlla la tua email per i risultati dettagliati e i suggerimenti per migliorare.</p>
+                <button id="new-test-btn" class="primary-btn">Fai un Altro Test</button>
+            </div>
+        </div>
+
+        <!-- Loading Overlay -->
+        <div id="loading-overlay" class="loading-overlay">
+            <div class="spinner"></div>
+            <p>Invio dei risultati in corso...</p>
+        </div>
+    </div>
+
+    <script src="questions.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
