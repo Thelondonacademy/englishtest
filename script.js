@@ -319,7 +319,7 @@ Level: ${qa.level}`;
             accuracy: accuracy,
             wrong_answers: wrongAnswersText,
             suggestions: `• ${suggestions}`,
-            test_date: new Date().toLocaleDateString()
+            test_date: new Date().toLocaleDateString(),
             bcc_email: "test@thelondonacademy.it"
         };
 
