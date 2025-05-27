@@ -273,20 +273,6 @@ class CEFRTest {
             return;
         }
 
-        // Validazione avanzata email con regex
-        const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-        if (!emailRegex.test(email)) {
-            alert('Inserisci un indirizzo email valido.');
-            return;
-        }
-
-        // Honeypot anti-bot: se il campo nascosto è compilato, blocca
-        const honeypot = document.getElementById('website').value;
-        if (honeypot) {
-            console.warn('Bot rilevato (honeypot attivato). Invio bloccato.');
-            return;
-        }
-
         this.showLoading(true);
 
         try {
