@@ -257,7 +257,7 @@ const levelDescriptions = {
             "Esercitati nella scrittura e nel parlato formale"
         ]
     },
-    C2: {
+    C1: {
         name: "Competente",
         description: "Riesci a comprendere con facilità praticamente tutto ciò che senti o leggi. Sai riassumere informazioni da diverse fonti parlate e scritte, ricostruendo argomentazioni in modo coerente.",
         nextSteps: [
