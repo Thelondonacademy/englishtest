@@ -29,13 +29,13 @@ class CEFRTest {
         // Get your keys from: https://www.emailjs.com/
         
         // SERVICE_ID: Your EmailJS service ID (e.g., 'service_xxxxxxx')
-        this.emailJSServiceId = 'service_j3awk3k'; // Replace with your service ID
+        this.emailJSServiceId = 'YOUR_SERVICE_ID'; // Replace with your service ID
         
         // TEMPLATE_ID: Your EmailJS template ID (e.g., 'template_xxxxxxx')
-        this.emailJSTemplateId = 'template_4i5u9pk'; // Replace with your template ID
+        this.emailJSTemplateId = 'YOUR_TEMPLATE_ID'; // Replace with your template ID
         
         // PUBLIC_KEY: Your EmailJS public key (e.g., 'xxxxxxxxxxxxxxx')
-        this.emailJSPublicKey = 'gvuXhLBLf6F2vkCxF'; // Replace with your public key
+        this.emailJSPublicKey = 'YOUR_PUBLIC_KEY'; // Replace with your public key
         
         // Initialize EmailJS with your public key
         emailjs.init(this.emailJSPublicKey);
@@ -81,12 +81,47 @@ class CEFRTest {
             return;
         }
 
-        const availableQuestions = questionsDatabase[this.currentLevel].filter(
+        // Try to find available questions at current level
+        let availableQuestions = questionsDatabase[this.currentLevel].filter(
             (_, index) => !this.usedQuestions.has(`${this.currentLevel}-${index}`)
         );
 
+        let selectedLevel = this.currentLevel;
+
+        // If no questions available at current level, try nearby levels
         if (availableQuestions.length === 0) {
-            // If no more questions at current level, finish the test
+            // Try to find questions in nearby levels (±1, ±2, etc.)
+            for (let offset = 1; offset < this.levels.length; offset++) {
+                // Try lower level
+                if (this.levelIndex - offset >= 0) {
+                    const lowerLevel = this.levels[this.levelIndex - offset];
+                    const lowerQuestions = questionsDatabase[lowerLevel].filter(
+                        (_, index) => !this.usedQuestions.has(`${lowerLevel}-${index}`)
+                    );
+                    if (lowerQuestions.length > 0) {
+                        availableQuestions = lowerQuestions;
+                        selectedLevel = lowerLevel;
+                        break;
+                    }
+                }
+                
+                // Try higher level
+                if (this.levelIndex + offset < this.levels.length) {
+                    const higherLevel = this.levels[this.levelIndex + offset];
+                    const higherQuestions = questionsDatabase[higherLevel].filter(
+                        (_, index) => !this.usedQuestions.has(`${higherLevel}-${index}`)
+                    );
+                    if (higherQuestions.length > 0) {
+                        availableQuestions = higherQuestions;
+                        selectedLevel = higherLevel;
+                        break;
+                    }
+                }
+            }
+        }
+
+        // If still no questions available anywhere, finish the test
+        if (availableQuestions.length === 0) {
             this.finishTest();
             return;
         }
@@ -95,10 +130,11 @@ class CEFRTest {
         const question = availableQuestions[randomIndex];
         
         // Find the original index to mark as used
-        const originalIndex = questionsDatabase[this.currentLevel].indexOf(question);
-        this.usedQuestions.add(`${this.currentLevel}-${originalIndex}`);
+        const originalIndex = questionsDatabase[selectedLevel].indexOf(question);
+        this.usedQuestions.add(`${selectedLevel}-${originalIndex}`);
 
         this.currentQuestion = question;
+        this.currentQuestionLevel = selectedLevel; // Track which level this question is from
         this.displayQuestion(question);
         this.updateProgress();
         this.selectedAnswer = null;
@@ -107,7 +143,8 @@ class CEFRTest {
 
     displayQuestion(question) {
         document.getElementById('question-text').textContent = question.question;
-        document.getElementById('current-level').textContent = this.currentLevel;
+        // Show the level of the actual question being asked
+        document.getElementById('current-level').textContent = this.currentQuestionLevel || this.currentLevel;
         
         const optionsContainer = document.getElementById('options-container');
         optionsContainer.innerHTML = '';
@@ -116,18 +153,28 @@ class CEFRTest {
             const optionElement = document.createElement('div');
             optionElement.className = 'option';
             optionElement.textContent = option;
+            // Riabilita le opzioni per la nuova domanda
+            optionElement.style.pointerEvents = 'auto';
+            optionElement.style.opacity = '1';
             optionElement.addEventListener('click', () => this.selectOption(index, optionElement));
             optionsContainer.appendChild(optionElement);
         });
     }
 
     selectOption(index, element) {
-        // Remove previous selections
+        // Se una risposta è già stata selezionata, non permettere cambio
+        if (this.selectedAnswer !== null) {
+            return;
+        }
+
+        // Disabilita tutte le opzioni dopo la selezione
         document.querySelectorAll('.option').forEach(opt => {
-            opt.classList.remove('selected');
+            opt.style.pointerEvents = 'none';
+            opt.style.opacity = '0.7';
         });
 
         element.classList.add('selected');
+        element.style.opacity = '1';
         this.selectedAnswer = index;
         document.getElementById('next-btn').disabled = false;
     }
@@ -146,13 +193,13 @@ class CEFRTest {
                 correctAnswer: this.currentQuestion.options[this.currentQuestion.correct],
                 explanation: this.currentQuestion.explanation,
                 topic: this.currentQuestion.topic,
-                level: this.currentLevel
+                level: this.currentQuestionLevel || this.currentLevel
             });
         }
 
         this.questionsAsked++;
         this.levelProgression.push({
-            level: this.currentLevel,
+            level: this.currentQuestionLevel || this.currentLevel,
             correct: isCorrect,
             questionNumber: this.questionsAsked
         });
@@ -206,12 +253,30 @@ class CEFRTest {
             }
         });
 
-        // Find the highest level where user got at least 50% correct with minimum questions
+        // Find the highest level where user meets the criteria
         for (let i = this.levels.length - 1; i >= 0; i--) {
             const level = this.levels[i];
             const stats = levelCounts[level];
-            if (stats.total >= 2 && stats.correct / stats.total >= 0.5) {
-                return level;
+            
+            // C2 richiede criteri molto più stringenti
+            if (level === 'C2') {
+                // Per C2: almeno 5 domande totali e 80% di accuratezza
+                if (stats.total >= 5 && stats.correct / stats.total >= 0.8) {
+                    return level;
+                }
+            } 
+            // C1 richiede criteri più stringenti
+            else if (level === 'C1') {
+                // Per C1: almeno 4 domande totali e 70% di accuratezza
+                if (stats.total >= 4 && stats.correct / stats.total >= 0.7) {
+                    return level;
+                }
+            }
+            // Altri livelli mantengono criteri standard
+            else {
+                if (stats.total >= 2 && stats.correct / stats.total >= 0.5) {
+                    return level;
+                }
             }
         }
 
@@ -319,8 +384,7 @@ Level: ${qa.level}`;
             accuracy: accuracy,
             wrong_answers: wrongAnswersText,
             suggestions: `• ${suggestions}`,
-            test_date: new Date().toLocaleDateString(),
-            bcc_email: "test@thelondonacademy.it"
+            test_date: new Date().toLocaleDateString()
         };
 
         // Send email using EmailJS
