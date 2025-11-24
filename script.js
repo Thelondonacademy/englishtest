@@ -25,22 +25,15 @@ class CEFRTest {
     }
 
     initializeEmailJS() {
-        // TODO: Replace with your EmailJS configuration
-        // Get your keys from: https://www.emailjs.com/
-        
-        // SERVICE_ID: Your EmailJS service ID (e.g., 'service_xxxxxxx')
-        this.emailJSServiceId = 'YOUR_SERVICE_ID'; // Replace with your service ID
-        
-        // TEMPLATE_ID: Your EmailJS template ID (e.g., 'template_xxxxxxx')
-        this.emailJSTemplateId = 'YOUR_TEMPLATE_ID'; // Replace with your template ID
-        
-        // PUBLIC_KEY: Your EmailJS public key (e.g., 'xxxxxxxxxxxxxxx')
-        this.emailJSPublicKey = 'YOUR_PUBLIC_KEY'; // Replace with your public key
+        // EmailJS configuration
+        this.emailJSServiceId = 'service_j3awk3k';
+        this.emailJSTemplateId = 'template_4i5u9pk';
+        this.emailJSPublicKey = 'gvuXhLBLf6F2vkCxF';
         
         // Initialize EmailJS with your public key
         emailjs.init(this.emailJSPublicKey);
         
-        console.log('EmailJS initialized. Please configure your service ID, template ID, and public key.');
+        console.log('EmailJS configured and ready!');
     }
 
     bindEvents() {
