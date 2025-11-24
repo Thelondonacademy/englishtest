@@ -323,22 +323,40 @@ class CEFRTest {
     async handleFormSubmission(e) {
         e.preventDefault();
         
-        const name = document.getElementById('user-name').value;
-        const email = document.getElementById('user-email').value;
+        const name = document.getElementById('user-name').value.trim();
+        const email = document.getElementById('user-email').value.trim();
         
+        // Validazione dei campi
         if (!name || !email) {
             alert('Per favore compila tutti i campi.');
+            return;
+        }
+
+        // Validazione email base
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            alert('Per favore inserisci un indirizzo email valido.');
             return;
         }
 
         this.showLoading(true);
 
         try {
+            console.log('Invio risultati via email...');
             await this.sendResultsEmail(name, email);
+            console.log('✅ Email inviata con successo!');
             this.showScreen('success');
         } catch (error) {
-            console.error('Error sending email:', error);
-            alert('Spiacenti, si è verificato un errore nell\'invio dei risultati. Riprova.');
+            console.error('❌ Errore nell\'invio email:', error);
+            let errorMessage = 'Spiacenti, si è verificato un errore nell\'invio dei risultati.';
+            
+            if (error.text) {
+                errorMessage += '\n\nDettagli: ' + error.text;
+            } else if (error.message) {
+                errorMessage += '\n\nDettagli: ' + error.message;
+            }
+            
+            alert(errorMessage + '\n\nPer favore riprova o contatta il supporto.');
         } finally {
             this.showLoading(false);
         }
@@ -354,14 +372,14 @@ class CEFRTest {
         if (this.wrongAnswers.length > 0) {
             wrongAnswersText = this.wrongAnswers.map((qa, index) => {
                 return `${index + 1}. ${qa.question}
-Your answer: ${qa.userAnswer}
-Correct answer: ${qa.correctAnswer}
-Explanation: ${qa.explanation}
-Topic: ${qa.topic}
-Level: ${qa.level}`;
+Tua risposta: ${qa.userAnswer}
+Risposta corretta: ${qa.correctAnswer}
+Spiegazione: ${qa.explanation}
+Argomento: ${qa.topic}
+Livello: ${qa.level}`;
             }).join('\n\n');
         } else {
-            wrongAnswersText = 'Congratulations! You answered all questions correctly.';
+            wrongAnswersText = 'Complimenti! Hai risposto correttamente a tutte le domande!';
         }
 
         // Prepare improvement suggestions
@@ -377,8 +395,10 @@ Level: ${qa.level}`;
             accuracy: accuracy,
             wrong_answers: wrongAnswersText,
             suggestions: `• ${suggestions}`,
-            test_date: new Date().toLocaleDateString()
+            test_date: new Date().toLocaleDateString('it-IT')
         };
+
+        console.log('Parametri email:', templateParams);
 
         // Send email using EmailJS
         const response = await emailjs.send(
@@ -387,8 +407,10 @@ Level: ${qa.level}`;
             templateParams
         );
 
+        console.log('Risposta EmailJS:', response);
+
         if (response.status !== 200) {
-            throw new Error('Email sending failed');
+            throw new Error('Email sending failed with status: ' + response.status);
         }
 
         return response;
@@ -444,9 +466,42 @@ Level: ${qa.level}`;
 }
 
 // Initialize the test when the page loads
+let testInstance;
 document.addEventListener('DOMContentLoaded', () => {
-    new CEFRTest();
+    testInstance = new CEFRTest();
 });
+
+// Test function for EmailJS - sends a test email
+async function testEmailJS() {
+    const testData = {
+        to_name: 'Gaston',
+        to_email: 'gastongabrielliotta@gmail.com',
+        user_level: 'B2 - Intermedio Superiore',
+        level_description: 'Riesci a comprendere le idee principali di testi complessi su argomenti sia concreti che astratti.',
+        total_questions: 20,
+        correct_answers: 15,
+        accuracy: 75,
+        wrong_answers: 'Esempio errore 1: Question about past tense\nYour answer: was\nCorrect answer: were\n\nEsempio errore 2: Question about conditionals\nYour answer: would go\nCorrect answer: will go',
+        suggestions: '• Perfeziona l\'uso dei tempi verbali avanzati\n• Studia i registri formali e informali\n• Esercitati con strutture frasali complesse',
+        test_date: new Date().toLocaleDateString()
+    };
+
+    try {
+        console.log('Invio email di test...');
+        const response = await emailjs.send(
+            'service_j3awk3k',
+            'template_4i5u9pk',
+            testData
+        );
+        console.log('✅ Email inviata con successo!', response);
+        alert('✅ Email di test inviata con successo a gastongabrielliotta@gmail.com! Controlla la tua casella di posta.');
+        return response;
+    } catch (error) {
+        console.error('❌ Errore nell\'invio email:', error);
+        alert('❌ Errore nell\'invio email: ' + error.text || error.message);
+        throw error;
+    }
+}
 
 // EmailJS Template Configuration Guide
 /*
